@@ -1,0 +1,22 @@
+{
+  "name": "teak",
+  "version": "0.0.1",
+  "description": "Tools for processing teak expressions",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PaulAustin/teakjs.git"
+  },
+  "keywords": [
+    "teak"
+  ],
+  "author": "Paul Austin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PaulAustin/teakjs/issues"
+  },
+  "homepage": "https://github.com/PaulAustin/teakjs#readme"
+}
