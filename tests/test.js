@@ -12,7 +12,14 @@ function test (teakExpression, expectedValue) {
   state = {};
   var obj =  teak.expressionToObject(teakExpression, state);
   assert.deepEqual(obj, expectedValue);
-  console.log('passed: <', obj, '=>', teakExpression, '>');
+  assert.equal(state.err, null);
+  console.log('passed: <', teakExpression, '> => <', obj, '>');
+}
+
+function print (teakExpression, expectedValue) {
+  state = {};
+  var obj =  teak.expressionToObject(teakExpression, state);
+  console.log('==print==: <', obj, '=>', teakExpression, '>');
 }
 
 /*
@@ -23,8 +30,6 @@ function testSyntaxFail (teakExpression, expectedValue) {
   console.log('error message<', state.error, ':', state.position, '>');
 }
 */
-
-// Basic scalars
 
 // Basic scalars
 test('null', null);
@@ -46,12 +51,15 @@ test('(1)', [1]);
 test('( 1)', [1]);
 test('(1 )', [1]);
 test(' (1 ) ', [1]);
-test('(1 2 3)', [1, 2, 3]);
 
-// partial stream read
+// Some malformed
+test('(  ', []);
+test('( 1 2 3  ', [1,2,3]);
+
+test('((1 2) (3 4))', [[1,2],[3,4]]);
+
+test("(('a' 2 true) ('b' 4 false))", [['a',2, true],['b',4, false]]);
+test("(('a' 2 true ()) ('b' 4 false (true)))", [['a',2, true,[]],['b',4, false,[true]]]);
+
+// Partial stream read
 test('123 456', 123);
-
-// string escape sequences
-test("('what' 'is' 'up')", ['what','is','up']);
-// pretty confusing, first <\\> is at the JS level second <\'> is at teak level
-test("('what\\\'s' 'up')", ["what's",'up']);
