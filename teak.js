@@ -7,10 +7,15 @@ module.exports = (function () {
   var tkCloseParen = 2;   // )
   var tkString = 3;       // 'abc'
   var tkNumber = 4;       // 123 456.289
+  var tkSymbol = 5;       // add
   var tkName = 5;         // name:
 
   function isNumberChar (c) {
     return (c >= '0' && c <= '9');
+  }
+
+  function isAlphaChar (c) {
+    return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
   }
 
   teak.StringTool = function StringTool (buffer, begin) {
@@ -58,6 +63,43 @@ module.exports = (function () {
     return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
   }
 */
+  // Reads characters from the buffer assuming it is a string
+  teak.StringTool.prototype.readStringToken = function () {
+    this.readChar();
+    var str = '';
+    var c = this.readChar();
+    while (c !== '\'' && !this.empty()) {
+      if (c !== '\\') {
+        str += c;
+        c = this.readChar();
+      } else {
+        console.log('found escape1:', c);
+        // Read escape sequence and translate.
+        c = this.readChar();
+        console.log('found escape2:', c);
+        if (c === 'n') {
+          str += '\n';
+        } else if (c === '\'') {
+          str += '\'';
+        } else if (c === '\"') {
+          str += '\"';
+        } else if (c === '\\') {
+          str += '\\';
+        } else if (c === 'u') {
+          // TODO unicode characters
+        } else {
+          // TODO bad escape code
+        }
+        c = this.readChar();
+      }
+    } while (c !== '\'' && !this.empty());
+
+    return {
+      string:str,
+      category:tkString,
+    };
+  };
+
   teak.StringTool.prototype.readToken = function () {
     this.skipSpace();
 
@@ -77,6 +119,18 @@ module.exports = (function () {
         str += this.readChar();
         c = this.peekChar();
       } while (isNumberChar(c));
+    } else if (isAlphaChar(c)) {
+      cat = tkSymbol;
+      do {
+        str += this.readChar();
+        c = this.peekChar();
+      } while (isNumberChar(c) || isAlphaChar(c));
+      if (c === ':') {
+        cat = tkName;
+        this.readChar();
+      }
+    } else if (c === '\'') {
+      return this.readStringToken();
     }
     return {
       string:str,
@@ -85,10 +139,12 @@ module.exports = (function () {
   };
 
   function tokenToObject(token) {
-    if (token.category = tkNumber) {
+    if (token.category === tkNumber) {
       return parseInt(token.string, 10);
-    } else {
-      return token.string;      
+    } else if (token.category === tkString) {
+      return token.string;
+    } else if (token.category === tkSymbol) {
+      return '_' + token.string;
     }
   }
 
