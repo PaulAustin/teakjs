@@ -2,9 +2,9 @@
   "name": "teak",
   "version": "0.0.1",
   "description": "Tools for processing teak expressions",
-  "main": "index.js",
+  "main": "lib/teak.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node tests/test.js"
   },
   "repository": {
     "type": "git",
