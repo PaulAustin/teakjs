@@ -1,4 +1,6 @@
+var assert = require('assert');
 var teak = require('./teak');
+
 var obj;
 
 var symbolTable = {
@@ -8,21 +10,34 @@ serialRead: function () {},
 serialWrite: function () {},
 };
 
-obj = teak.teakExpressionToObject('(1234 5678 123 )', symbolTable);
-console.log('teak obj:', obj);
+function test (teakExpression, expectedValue) {
+  var obj =  teak.expressionToObject(teakExpression, symbolTable);
+  assert.deepEqual(obj, expectedValue);
+  console.log('passed: <', teakExpression, '>');
+}
 
-obj = teak.teakExpressionToObject('1456 234', symbolTable);
-console.log('teak obj:', obj);
+// Basic scalars
+test('null', null);
+test('true', true);
+test('false', false);
+test('1', 1);
+test('42', 42);
+test('505', 505);
+test('1234567890', 1234567890);
+test('\'Hello\'', 'Hello');
 
-obj = teak.teakExpressionToObject('()', symbolTable);
-console.log('teak obj:', obj);
+// Simple lists
+test('()', []);
+test('(1)', [1]);
+test('( 1)', [1]);
+test('(1 )', [1]);
+test(' (1 ) ', [1]);
+test('(1 2 3)', [1, 2, 3]);
 
-obj = teak.teakExpressionToObject("'hello'", symbolTable);
-console.log('teak obj:', obj);
+// partial stream read
+test('123 456', 123);
 
-obj = teak.teakExpressionToObject("('hello' 'what' 'is' 'up' 45)", symbolTable);
-console.log('teak obj:', obj);
-
-console.log(">>>('helloyo' 'what\\\'s' 'up' 45)");
-obj = teak.teakExpressionToObject("('hello' 'what\\\'s' 'up' 45)", symbolTable);
-console.log('teak obj:', obj);
+// string escape sequences
+test("('what' 'is' 'up')", ['what','is','up']);
+// pretty confusing, first <\\> is at the JS level second <\'> is at teak level
+test("('what\\\'s' 'up')", ["what's",'up']);

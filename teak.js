@@ -54,17 +54,25 @@ module.exports = (function () {
     }
     return c;
   };
-/*
-  teak.StringTool.prototype.nextCharIsAlpha = function () {
-    if (this.empty()) {
-      return false
+
+  teak.StringTool.prototype.scanSymbolToken = function () {
+    cat = tkSymbol;
+    do {
+      str += this.readChar();
+      c = this.peekChar();
+    } while (isNumberChar(c) || isAlphaChar(c));
+
+    // There are a few special cases
+    if (c === ':') {
+      // symbol followed by a colon is really anchor/field name
+      // this takes precedence over reserved words.
+      cat = tkName;
+      this.readChar();
     }
-    var c = this.buffer[this.begin]
-    return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
-  }
-*/
+  };
+
   // Reads characters from the buffer assuming it is a string
-  teak.StringTool.prototype.readStringToken = function () {
+  teak.StringTool.prototype.scanStringToken = function () {
     this.readChar();
     var str = '';
     var c = this.readChar();
@@ -73,10 +81,8 @@ module.exports = (function () {
         str += c;
         c = this.readChar();
       } else {
-        console.log('found escape1:', c);
         // Read escape sequence and translate.
         c = this.readChar();
-        console.log('found escape2:', c);
         if (c === 'n') {
           str += '\n';
         } else if (c === '\'') {
@@ -130,7 +136,7 @@ module.exports = (function () {
         this.readChar();
       }
     } else if (c === '\'') {
-      return this.readStringToken();
+      return this.scanStringToken();
     }
     return {
       string:str,
@@ -138,37 +144,48 @@ module.exports = (function () {
     };
   };
 
-  function tokenToObject(token) {
+  teak.StringTool.prototype.tokenToObject = function (token) {
+    var str = token.string;
     if (token.category === tkNumber) {
-      return parseInt(token.string, 10);
+      return parseInt(str, 10);
     } else if (token.category === tkString) {
-      return token.string;
+      return str;
     } else if (token.category === tkSymbol) {
-      return '_' + token.string;
+      // Check for reserved words first
+      if (str === 'true') {
+        return true;
+      } else if (str === 'false') {
+        return false;
+      } else if (str === 'null') {
+        return null;
+      } else {
+        // TODO Look up in symbool table.
+        return '_' + str;
+      }
     }
-  }
+  };
 
-  function buildObject(st) {
+  teak.StringTool.prototype.buildObject = function (st) {
       obj = [];
 
       var token = st.readToken();
       while (token.category !== tkCloseParen && !st.empty()) {
-        obj.push(tokenToObject(token));
+        obj.push(this.tokenToObject(token));
         token = st.readToken();
       }
       return obj;
-  }
+  };
 
-  teak.teakExpressionToObject = function (string) {
+  teak.expressionToObject = function (string) {
     var st = new teak.StringTool(Array.from(string), 0);
     var obj = null;
     var token = st.readToken();
 
     if (token.category === tkOpenParen) {
-      obj = buildObject(st);
+      obj = st.buildObject(st);
     } else {
       // Need smarter conversion function
-      obj = tokenToObject(token);
+      obj = st.tokenToObject(token);
     }
 
     return obj;
