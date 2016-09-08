@@ -1,7 +1,5 @@
 var assert = require('assert');
-var teak = require('./teak');
-
-var obj;
+var teak = require('../lib/teak.js');
 
 var symbolTable = {
 motor: function () {},
@@ -11,10 +9,22 @@ serialWrite: function () {},
 };
 
 function test (teakExpression, expectedValue) {
-  var obj =  teak.expressionToObject(teakExpression, symbolTable);
+  state = {};
+  var obj =  teak.expressionToObject(teakExpression, state);
   assert.deepEqual(obj, expectedValue);
-  console.log('passed: <', teakExpression, '>');
+  console.log('passed: <', obj, '=>', teakExpression, '>');
 }
+
+/*
+function testSyntaxFail (teakExpression, expectedValue) {
+  state = {};
+  var obj =  teak.expressionToObject(teakExpression, state);
+  console.log('partial parse<', obj, '>');
+  console.log('error message<', state.error, ':', state.position, '>');
+}
+*/
+
+// Basic scalars
 
 // Basic scalars
 test('null', null);
@@ -25,6 +35,10 @@ test('42', 42);
 test('505', 505);
 test('1234567890', 1234567890);
 test('\'Hello\'', 'Hello');
+test("' \\\\ '", ' \\ ');
+
+test(" + ", null);
+test("' + '", ' + ');
 
 // Simple lists
 test('()', []);
