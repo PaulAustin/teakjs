@@ -1,9 +1,8 @@
 
-## In development.
-This is a preliminary version published for use by Collaborators.
+## NOTE: In development
+This is a preliminary version published for use by collaborators.
 
 ## Teak Tools
-
 Teak is a functional data language used to describe data in the form of scalars,
 lists, trees, or general graphs. It's grammar draws from LISP and JSON.
 
