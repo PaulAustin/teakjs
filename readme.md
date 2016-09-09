@@ -1,3 +1,7 @@
+
+## In development.
+This is a preliminary version published for use by Collaborators.
+
 ## Teak Tools
 
 Teak is a functional data language used to describe data in the form of scalars,
@@ -14,8 +18,9 @@ JSON grammar elements
 * UTF8 encoding
 * Unicode escapes
 
-TEAK specific
+TEAK specific elements
 * IEEE 754 floating point
+* Optional names used as anchor tags
 
 The Teak NPM package provides tools to work with teak expressions in JavaScript.
 
