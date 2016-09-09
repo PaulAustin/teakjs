@@ -11,7 +11,7 @@ serialWrite: function () {},
 function test (teakExpression, expectedValue) {
   state = {};
   var obj =  teak.expressionToObject(teakExpression, state);
-  assert.deepEqual(obj, expectedValue);
+  assert.deepEqual(expectedValue, obj);
   assert.equal(state.err, null);
   console.log('passed: <', teakExpression, '> => <', obj, '>');
 }
@@ -52,6 +52,8 @@ test('( 1)', [1]);
 test('(1 )', [1]);
 test(' (1 ) ', [1]);
 
+test('(true)', [true]);
+
 // Some malformed
 test('(  ', []);
 test('( 1 2 3  ', [1,2,3]);
@@ -63,3 +65,7 @@ test("(('a' 2 true ()) ('b' 4 false (true)))", [['a',2, true,[]],['b',4, false,[
 
 // Partial stream read
 test('123 456', 123);
+
+//test('(x:123 y:90)',[123, 90]);
+//test('(x:123 50 y:90)',[123, 90]);
+test('(setPixel x:123 y:90)',['_setPixel', 123, 90]);
