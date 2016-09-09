@@ -8,6 +8,7 @@ serialRead: function () {},
 serialWrite: function () {},
 };
 
+//-----------------------------------------------------------------------------
 function test (teakExpression, expectedValue) {
   state = {};
   var obj =  teak.expressionToObject(teakExpression, state);
@@ -16,6 +17,41 @@ function test (teakExpression, expectedValue) {
   console.log('passed: <', teakExpression, '> => <', obj, '>');
 }
 
+//-----------------------------------------------------------------------------
+// For tests where direct comparisons wont work expectedValue
+// can be supplied as the form toConsoleString should return
+function testStringForm (teakExpression, expectedValue) {
+  state = {};
+  var obj = teak.expressionToObject(teakExpression, state);
+  var str = toPseudoJSONString(obj);
+  assert.equal(expectedValue, str);
+  assert.equal(state.err, null);
+  console.log('passed: <', teakExpression, '> => <', str, '>');
+}
+
+//-----------------------------------------------------------------------------
+function toPseudoJSONString(obj) {
+  // Turns out its not simple to get the same toString that consoel.log
+  // has. Regular JSON.stringify() turns nan and infs to null :(
+  return JSON.stringify(obj, function (name, value) {
+
+    if ((typeof value) !== 'number') {
+      return value;
+    }
+
+    if (isNaN(value)) {
+      return 'NaN';
+    } else if (value > 0 && !isFinite(value)) {
+      return 'Infinity';
+    } else if (value < 0 && !isFinite(value)) {
+      return '-Infinity';
+    } else {
+      return value;
+    }
+  });
+}
+
+//-----------------------------------------------------------------------------
 function print (teakExpression, expectedValue) {
   state = {};
   var obj =  teak.expressionToObject(teakExpression, state);
@@ -54,9 +90,10 @@ test(' (1 ) ', [1]);
 
 test('(true)', [true]);
 
+
 // Some malformed
-test('(  ', []);
-test('( 1 2 3  ', [1,2,3]);
+test('(  ', null);
+test('( 1 2 3  ', null);
 
 test('((1 2) (3 4))', [[1,2],[3,4]]);
 
@@ -65,6 +102,15 @@ test("(('a' 2 true ()) ('b' 4 false (true)))", [['a',2, true,[]],['b',4, false,[
 
 // Partial stream read
 test('123 456', 123);
+
+// NaN anss Infinities are never equal so test as string
+testStringForm('nan', '"NaN"');
+testStringForm('inf', '"Infinity"');
+testStringForm('-inf', '"-Infinity"');
+testStringForm('(nan)', '["NaN"]');
+testStringForm('(inf)', '["Infinity"]');
+testStringForm('(-inf)', '["-Infinity"]');
+testStringForm('(0 nan 1)', '[0,"NaN",1]');
 
 //test('(x:123 y:90)',[123, 90]);
 //test('(x:123 50 y:90)',[123, 90]);

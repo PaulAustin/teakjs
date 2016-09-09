@@ -14,6 +14,9 @@ JSON grammar elements
 * UTF8 encoding
 * Unicode escapes
 
+TEAK specific
+* IEEE 754 floating point
+
 The Teak NPM package provides tools to work with teak expressions in JavaScript.
 
 ### Installation
