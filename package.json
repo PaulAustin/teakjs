@@ -1,7 +1,7 @@
 {
   "name": "teak",
-  "version": "0.0.1",
-  "description": "Tools for processing teak expressions",
+  "version": "0.0.2",
+  "description": "Tools for working with Teak, a functional data language.",
   "main": "lib/teak.js",
   "scripts": {
     "test": "node tests/test.js"
@@ -13,7 +13,7 @@
   "keywords": [
     "teak"
   ],
-  "author": "Paul Austin",
+  "author": "Paul Austin (http://www.hld.io)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/PaulAustin/teakjs/issues"
