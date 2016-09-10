@@ -10,7 +10,6 @@ serialWrite: function () {},
 
 //-----------------------------------------------------------------------------
 function test (teakExpression, expectedValue) {
-  console.log('TE', teakExpression);
   state = {};
   var obj =  teak.expressionToObject(teakExpression, state);
   assert.deepEqual(expectedValue, obj);
@@ -70,6 +69,10 @@ function testSyntaxFail (teakExpression, expectedValue) {
 
 // Basic scalars
 
+test('1.5', 1.5);
+test('1.000000001', 1.000000001);
+test('(3.14 6.28)', [3.14, 6.28]);
+
 test('null', null);
 test('true', true);
 test('false', false);
@@ -118,12 +121,14 @@ testStringForm('(0 nan 1)', '[0,"NaN",1]');
 //test('(x:123 50 y:90)',[123, 90]);
 test('(setPixel x:123 y:90)',['_setPixel', 123, 90]);
 
+// multi-line
 test(`(
   (1 2 3)
   (4 5 6)
 )`,
 [[1,2,3],[4,5,6]]);
 
+// comment to end of line
 test(`(
   (1 2 3) // Line 1
   (4 5 6) // line 2
