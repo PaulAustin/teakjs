@@ -3,4 +3,3 @@ node_js:
   - "node"
   - "4"
   - "6"
-  - "iojs"

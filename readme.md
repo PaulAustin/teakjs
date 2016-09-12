@@ -1,3 +1,4 @@
+[![BuildStatus](https://api.travis-ci.org/PaulAustin/teakjs.svg?branch=master)](https://travis-ci.org/PaulAustin/teakjs)
 
 ## NOTE: In development
 This is a preliminary version published for use by collaborators.
