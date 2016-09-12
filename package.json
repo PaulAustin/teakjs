@@ -1,6 +1,6 @@
 {
   "name": "teak",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Tools for working with Teak, a functional data language.",
   "main": "lib/teak.js",
   "scripts": {
