@@ -2,6 +2,11 @@ var assert = require('assert');
 var teak = require('../lib/teak.js');
 
 var symbolTable = {
+a:1,
+b:2,
+c:true,
+d:[true],
+setPixel: function () {},
 motor: function () {},
 servo: function () {},
 serialRead: function () {},
@@ -11,7 +16,7 @@ serialWrite: function () {},
 //-----------------------------------------------------------------------------
 function test (teakExpression, expectedValue) {
   state = {};
-  var obj =  teak.expressionToObject(teakExpression, state);
+  var obj =  teak.expressionToObject(teakExpression, state, symbolTable);
   assert.deepEqual(expectedValue, obj);
   assert.equal(state.err, null);
   console.log('passed: <', teakExpression, '> => <', obj, '>');
@@ -136,7 +141,15 @@ test(`(
 
 // Expressions wiht field names
 test('(x:123 y:90)',{x:123, y:90});
-test('(setPixel x:123 y:90)',{_0:'_setPixel', x:123, y:90});
-test('(clearPixel x:1.5 y:null)',{_0:'_clearPixel', x:1.5, y:null});
-test('(clearPixel x:() y:(()))))',{_0:'_clearPixel', x:[], y:[[]]});
-test('(clearPixel x:-3 y:-4 z:0 true)',{_0:'_clearPixel', x:-3, y:-4, z:0, _4:true});
+test('(setPixel x:123 y:90)',{_0:symbolTable.setPixel, x:123, y:90});
+test('(clearPixel x:1.5 y:null)',{_0:symbolTable.clearPixel, x:1.5, y:null});
+test('(clearPixel x:() y:(()))))',{_0:symbolTable.clearPixel, x:[], y:[[]]});
+test('(clearPixel x:-3 y:-4 z:0 true)',{_0:symbolTable.clearPixel, x:-3, y:-4, z:0, _4:true});
+
+// Look up symbols from simple table provided in test funtion.
+test('a',1);
+test('(a)',[1]);
+test('((a))',[[1]]);
+test('((c)d)',[[true], [true]]);
+test('(a b c d)',[1, 2, true, [true]]);
+test('((a) b c d)',[[1], 2, true, [true]]);
