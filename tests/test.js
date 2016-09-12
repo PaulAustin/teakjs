@@ -16,7 +16,7 @@ serialWrite: function () {},
 //-----------------------------------------------------------------------------
 function test (teakExpression, expectedValue) {
   state = {};
-  var obj =  teak.expressionToObject(teakExpression, state, symbolTable);
+  var obj =  teak.parse(teakExpression, state, symbolTable);
   assert.deepEqual(expectedValue, obj);
   assert.equal(state.err, null);
   console.log('passed: <', teakExpression, '> => <', obj, '>');
@@ -27,7 +27,7 @@ function test (teakExpression, expectedValue) {
 // can be supplied as the form toConsoleString should return
 function testStringForm (teakExpression, expectedValue) {
   state = {};
-  var obj = teak.expressionToObject(teakExpression, state);
+  var obj = teak.parse(teakExpression, state);
   var str = toPseudoJSONString(obj);
   assert.equal(expectedValue, str);
   assert.equal(state.err, null);
@@ -59,21 +59,14 @@ function toPseudoJSONString(obj) {
 //-----------------------------------------------------------------------------
 function print (teakExpression, expectedValue) {
   state = {};
-  var obj =  teak.expressionToObject(teakExpression, state);
+  var obj =  teak.parse(teakExpression, state);
   console.log('==print==: <', obj, '=>', teakExpression, '>');
 }
 
-/*
-function testSyntaxFail (teakExpression, expectedValue) {
-  state = {};
-  var obj =  teak.expressionToObject(teakExpression, state);
-  console.log('partial parse<', obj, '>');
-  console.log('error message<', state.error, ':', state.position, '>');
-}
-*/
+// Simole example
+console.log(teak.parse('(1 2 3 4)'));
 
 // Basic scalars
-
 test('1.5', 1.5);
 test('1.000000001', 1.000000001);
 test('(3.14 6.28)', [3.14, 6.28]);

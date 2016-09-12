@@ -35,7 +35,7 @@ The Teak NPM package provides tools to work with teak expressions in JavaScript.
 ```
 var teak = require('teak');
 
-console.log(teak.teakExpressionToObject('(1 2 3 4)'));
-[1, 2, 3, 4]
+console.log(teak.parse('(1 2 3 4)'));
+// -> [ 1, 2, 3, 4 ]
 
 ```
