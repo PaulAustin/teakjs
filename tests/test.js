@@ -117,10 +117,6 @@ testStringForm('(inf)', '["Infinity"]');
 testStringForm('(-inf)', '["-Infinity"]');
 testStringForm('(0 nan 1)', '[0,"NaN",1]');
 
-//test('(x:123 y:90)',[123, 90]);
-//test('(x:123 50 y:90)',[123, 90]);
-test('(setPixel x:123 y:90)',['_setPixel', 123, 90]);
-
 // multi-line
 test(`(
   (1 2 3)
@@ -134,3 +130,13 @@ test(`(
   (4 5 6) // line 2
 )`,
 [[1,2,3],[4,5,6]]);
+
+//test('(x:123 y:90)',[123, 90]);
+//test('(x:123 50 y:90)',[123, 90]);
+
+// Expressions wiht field names
+test('(x:123 y:90)',{x:123, y:90});
+test('(setPixel x:123 y:90)',{_0:'_setPixel', x:123, y:90});
+test('(clearPixel x:1.5 y:null)',{_0:'_clearPixel', x:1.5, y:null});
+test('(clearPixel x:() y:(()))))',{_0:'_clearPixel', x:[], y:[[]]});
+test('(clearPixel x:-3 y:-4 z:0 true)',{_0:'_clearPixel', x:-3, y:-4, z:0, _4:true});
