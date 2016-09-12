@@ -1,6 +1,6 @@
 {
   "name": "teak",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Tools for working with Teak, a functional data language.",
   "main": "lib/teak.js",
   "scripts": {
@@ -18,5 +18,6 @@
   "bugs": {
     "url": "https://github.com/PaulAustin/teakjs/issues"
   },
-  "homepage": "https://github.com/PaulAustin/teakjs#readme"
+  "homepage": "https://github.com/PaulAustin/teakjs#readme",
+  "tonicExampleFilename": "tests/example.js;"
 }
