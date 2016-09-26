@@ -7,14 +7,16 @@ var exec = require('../lib/execution.js');
 var code1 = `
 (
   (startup
-    (stdout 'Hello, World.')
+    (stdout 'Hello, World.\n')
   )
 
   (startup
-    (stdout 'Hello, Moon.')
+    (stdout 'Hello, Moon.\n')
   )
 )
 `;
+
+var gOutput = '';
 
 function pumpLoop(rt) {
   var stuffDone = rt.pump();
@@ -22,13 +24,17 @@ function pumpLoop(rt) {
     setTimeout(function(){ pumpLoop(rt); }, 100);
   } else {
     console.log('Nothing left to run');
+    console.log(gOutput);
+    assert.equal(gOutput, 'Hello, World.\nHello, Moon.\n');
   }
 }
 
+
 function test1() {
-  var state = {};
+  let state = {};
+  state.stdout = function(text) { gOutput = gOutput + text; };
+
   let obj =  teak.parse(code1, state, exec.standardLib);
-  state.stdout = function(message) { console.log(message); };
 
   let rt = new exec.RunTime(obj, state, exec.standardLib);
   pumpLoop(rt);
