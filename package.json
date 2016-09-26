@@ -4,7 +4,7 @@
   "description": "Tools for working with Teak, a functional data language.",
   "main": "lib/teak.js",
   "scripts": {
-    "test": "node tests/test.js"
+    "test": "node tests/test.js; node tests/testExec.js"
   },
   "repository": {
     "type": "git",
