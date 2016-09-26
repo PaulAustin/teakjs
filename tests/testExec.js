@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert');
 var teak = require('../lib/teak.js');
 var exec = require('../lib/execution.js');

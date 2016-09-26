@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert');
 var teak = require('../lib/teak.js');
 
@@ -15,7 +17,7 @@ serialWrite: function () {},
 
 //-----------------------------------------------------------------------------
 function test (teakExpression, expectedValue) {
-  state = {};
+  var state = {};
   var obj =  teak.parse(teakExpression, state, symbolTable);
   assert.deepEqual(expectedValue, obj);
   assert.equal(state.err, null);
@@ -26,7 +28,7 @@ function test (teakExpression, expectedValue) {
 // For tests where direct comparisons wont work expectedValue
 // can be supplied as the form toConsoleString should return
 function testStringForm (teakExpression, expectedValue) {
-  state = {};
+  var state = {};
   var obj = teak.parse(teakExpression, state);
   var str = toPseudoJSONString(obj);
   assert.equal(expectedValue, str);
@@ -58,7 +60,7 @@ function toPseudoJSONString(obj) {
 
 //-----------------------------------------------------------------------------
 function print (teakExpression, expectedValue) {
-  state = {};
+  var state = {};
   var obj =  teak.parse(teakExpression, state);
   console.log('==print==: <', obj, '=>', teakExpression, '>');
 }
