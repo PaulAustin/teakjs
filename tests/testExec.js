@@ -112,13 +112,41 @@ a
   b
   b
 `;
+//------------------------------------------------------------------------------
+let c4 = `
+(
+  (startup
+    (stdout 'start')
+    (wait 1.5)
+    (stdout 'finish')
+  )
+)
+`;
+let r4 =
+`start
+finish
+`;
+//------------------------------------------------------------------------------
+let c5 = `
+(
+  symbol1: 42
+  symbol2: true
+  symbol3: 'Howdy'
 
+  funtion1: (startup
+    (stdout symbol1)
+    (stdout symbol2)
+    (stdout symbol3)
+  )
+)
+`;
 
 //------------------------------------------------------------------------------
 let execTests =  [
-  [c1,r1],
-  [c2,r2],
-  [c3,r3],
+  [c1, r1],
+  [c2, r2],
+  [c3, r3],
+  [c4, r4],
 ];
 
 runTests(execTests);
