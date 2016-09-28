@@ -34,18 +34,19 @@ var gOutput = '';
 function pumpLoop(rt) {
   var stuffDone = rt.pump();
   if (stuffDone) {
-    setTimeout(function(){ pumpLoop(rt); }, 100);
+    setTimeout(function(){ pumpLoop(rt); }, 10);
   } else {
     console.log('Nothing left to run');
-    console.log('stdout:', gOutput);
+    console.log('stdout:');
+    console.log(gOutput);
     assert.equal(gOutput, code1Expected);
   }
 }
 
-function test1() {
+function test1(codeBlock) {
   let state = {};
   state.stdout = function(text) { gOutput = gOutput + text; };
-  let obj =  teak.parse(code1, state, exec.standardLib);
+  let obj =  teak.parse(codeBlock, state, exec.standardLib);
   let rt = new exec.RunTime(obj, state, exec.standardLib);
   pumpLoop(rt);
 }
@@ -53,12 +54,13 @@ function test1() {
 var code2 = `
 (
   (startup
-    (stdout 'Hello, World.\n' 1 2 3)
-  )
-
-  (startup
+    (stdout 'Hello, loops.')
+    (loop 2
+      (stdout 'Whats')
+      (stdout 'Up')
+    )
   )
 )
 `;
 
-test1();
+test1(code1);
