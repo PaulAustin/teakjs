@@ -4,38 +4,26 @@ var assert = require('assert');
 var teak = require('../lib/teak.js');
 var exec = require('../lib/execution.js');
 
-var gOutput = '';
-var gIndex = 0;
-var gTests = null;
+function popAndRunTest(tests, index) {
+  let state = {
+    stdout:''
+  };
 
-function pumpLoop(rt) {
-  var stuffDone = rt.pump();
-  if (stuffDone) {
-    setTimeout(function(){ pumpLoop(rt); }, 10);
-  } else {
-    console.log('------- Test finished -------');
-    console.log(gOutput);
-    assert.equal(gOutput, gTests[gIndex][1]);
-    gIndex++;
-    if (gIndex < gTests.length) {
-      popAndRunTest();
-    }
-  }
-}
-
-function popAndRunTest(codeBlock) {
-  let state = {};
-  gOutput = '';
-  state.stdout = function(text) { gOutput = gOutput + text; };
-  let obj =  teak.parse(gTests[gIndex][0], state, exec.standardLib);
+  let obj =  teak.parse(tests[index][0], state, exec.standardLib);
   let rt = new exec.RunTime(obj, state, exec.standardLib);
-  pumpLoop(rt);
+  rt.run( function(text) {
+    console.log('------- Test finished -------');
+    console.log(text);
+    assert.equal(text, tests[index][1]);
+    index += 1;
+    if (index < tests.length) {
+      popAndRunTest(tests, index);
+    }
+  });
 }
 
 function runTests(listOfTests) {
-  gTests = listOfTests;
-  gIndex = 0;
-  popAndRunTest();
+  popAndRunTest(listOfTests, 0);
 }
 
 //------------------------------------------------------------------------------
