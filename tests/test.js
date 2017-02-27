@@ -24,6 +24,19 @@ function test (teakExpression, expectedValue) {
   console.log('passed: <', teakExpression, '> => <', obj, '>');
 }
 
+function functionalST(name) {
+  return '__' + name;
+}
+
+//-----------------------------------------------------------------------------
+function testFST (teakExpression, expectedValue) {
+  var state = {};
+  var obj =  teak.parse(teakExpression, state, functionalST);
+  assert.deepEqual(expectedValue, obj);
+  assert.equal(state.err, null);
+  console.log('passed: <', teakExpression, '> => <', obj, '>');
+}
+
 //-----------------------------------------------------------------------------
 // For tests where direct comparisons wont work expectedValue
 // can be supplied as the form toConsoleString should return
@@ -148,3 +161,9 @@ test('((a))',[[1]]);
 test('((c)d)',[[true], [true]]);
 test('(a b c d)',[1, 2, true, [true]]);
 test('((a) b c d)',[[1], 2, true, [true]]);
+
+// Use SymbolTable funtion.
+testFST('a','__a');
+testFST('(a)',['__a']);
+testFST('(zoo)',['__zoo']);
+testFST('(zoo x:45)', { _0: '__zoo', x: 45 });
